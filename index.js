@@ -1,5 +1,18 @@
-let _= require('underscore')
+let _= require('underscore');
 let fs = require('fs');
+
+
+let m = inputFile("input.txt");
+var path =  [];
+//obtengo los extremos de fila y columna
+let x = m.length;
+let y = m[0].length;
+
+let camino = [];
+let caminos = [];
+
+let coordenadaPartida = partida(m);
+let coordenadaTermino = final(m);
 
 function separar(input) {  // a esta función se le pasa la variable que contiene el texto de entrada y entrega la matriz formateada
     let m = [];
@@ -8,8 +21,7 @@ function separar(input) {  // a esta función se le pasa la variable que contien
         // Fuente: https://www.iteramos.com/pregunta/41037/como-eliminar-todos-los-saltos-de-linea-de-una-cadena)
         linea = linea.split(" ");  // Separamos el texto en comas
         linea = formatear(linea);
-
-        m.push(linea)
+        m.push(linea);
     });
     return m;
 }
@@ -27,107 +39,100 @@ function inputFile(file){
     return input;
 }
 
-
-m = inputFile("input.txt")
-
-console.log(m);
-
-Limx = m.length -1
-Limy= m[0].length -1
-
-camino=[]
-arraydecaminos=[]
-
-function partida(m){
-    let cont=0
-    let iniciofinal=0
+function partida(m) {  // da en qué punto debe partir a recorrer (te dice donde está el 0 inicial)
+    let cont = 0;
+    let iniciofinal = 0;
     m.forEach(function (coordenada){
-        cont+=1
-        if(coordenada[0]===0){
-            iniciofinal=cont-1
+        cont += 1;
+        if(coordenada[0] === 0) {
+            iniciofinal = cont-1;
         }
-    })
-    return iniciofinal
-}   // da en qué punto debe partir a recorrer (te dice donde está el 0 inicial)
-inicio= partida(m)
+    });
+    return [iniciofinal, 0];
+}
 
 function final(m) {
-    let cont=0
-    let coorfinal = []
-    let nfinal = 0
+    let cont = 0;
+    let coorfinal = [];
+    let y = m[0].length;
     m.forEach(function (coordenada) {
-        cont += 1
-        if (coordenada[m.length - 1] === 0) {
-            nfinal = cont - 1
-            coorfinal.push(nfinal, m.length - 1)
+        let ultimo = coordenada[y-1]
+        if (ultimo === 0) {
+            return coorfinal = [cont, y-1];
         }
-    })
-    return coorfinal
+        cont += 1;
+    });
+    return coorfinal;
 }  //identifica en qué coordenada debe parar el programa
-termino= final(m)
-
 
 function find(m,x,y,n){
-    if(x>Limx || y>Limy){
-        return false
-    }
-    let posicionactual=[x,y]
 
-    if( JSON.stringify(n)===JSON.stringify(posicionactual)){  //esta es la manera de comparar arrays xd
-        arraydecaminos.push(camino)
-        return camino
-    }
+    let Limx = m.length;
+    let Limy = m[0].length;
+    let coordenada = [x, y];
 
+    if(x >= Limx || y >= Limy) { return false; }  // caso en el que excedemos los límites de la matriz
+
+    let posicionactual = [x,y];
+
+    if(JSON.stringify(n) === JSON.stringify(posicionactual)){  // comparamos la posición actual con la coordenada de término para ver si logramos hacer un camino completo
+        camino.push(coordenada);  // agregamos la última posición del camino
+        caminos.push(camino);
+        return camino;
+    }
 
     else{
-        if(SiPuede(m,x,y+1,camino) ) {
-            let coordenada = [x, y]//se mueve derecha
-            camino.push(coordenada)
-            movimientoanterior=0
-            return find(m, x, y + 1, n)
+        if(SiPuede(m,x,y+1,camino)) {
+              //se mueve derecha
+            camino.push(coordenada);
+            movimientoanterior = 0;
+            return find(m, x, y + 1, n);
         }
 
-        if(SiPuede(m,x+1,y,camino)){
-            let coordenada=[x,y]
-            camino.push(coordenada)//se mueve para abajo
-            movimientoanterior=3
-            return find(m,x+1,y,n)
+        if(SiPuede(m,x+1,y,camino)) {
+            camino.push(coordenada);  //se mueve para abajo
+            movimientoanterior = 3;
+            return find(m,x+1,y,n);
         }
 
-        if(SiPuede(m,x,y-1,camino)){        //se mueve izquierda
-            let coordenada=[x,y]
-            camino.push(coordenada)
-            movimientoanterior=2
-            return find(m,x,y-1,n)
+        if(SiPuede(m,x,y-1,camino)) {        //se mueve izquierda
+            camino.push(coordenada);
+            movimientoanterior = 2;
+            return find(m,x,y-1,n);
         }
 
         if(SiPuede(m,x-1,y,camino)){        //se mueve arriba
-            let coordenada=[x,y]
-            camino.push(coordenada)
-            movimientoanterior=2
-            return find(m,x-1,y,n)
-
-        }else{
-            return true
+            camino.push(coordenada);
+            movimientoanterior = 2;
+            return find(m,x-1,y,n);
+        } else {
+            return true;
         }
     }
 }
 
+function SiPuede(m,x,y,camino) {
 
-function SiPuede(m,x,y,camino){
-    bool=true
+    let Limx = m.length;
+    let Limy = m[0].length;
+    nueva_pos = [x,y];
+
+    let bool = true;
     camino.forEach(function (coordenada){
-        coor= [x,y]
-        if(JSON.stringify(coordenada)===JSON.stringify(coor)){
-            bool= false
-        }
-    })//agregar que si está en el camino no puede entrar
-    if(x<=Limx && y<=Limy && m[x][y]===0 ){
-        return bool
-    }else{
-        return false
-    }
+        if(JSON.stringify(coordenada)===JSON.stringify(nueva_pos)) { bool = false; }  // para que no se devuelva por el mismo camino
+    })  //agregar que si está en el camino no puede entrar
 
+    if(x<Limx && y<Limy && m[x][y]===0) {
+        return bool;
+    } else {
+        return false;
+    }
 }
 
-console.log(find(m,inicio,0,termino))
+console.log(find(m, coordenadaPartida[0], 0, coordenadaTermino));
+// console.log(coordenadaTermino)
+
+
+
+
+
