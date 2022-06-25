@@ -65,48 +65,43 @@ function final(m) {
     return coorfinal;
 }  //identifica en qué coordenada debe parar el programa
 
-function find(m,x,y,n){
+function find(m,x,y,n, camino){
 
     let Limx = m.length;
     let Limy = m[0].length;
-    let coordenada = [x, y];
 
     if(x >= Limx || y >= Limy) { return false; }  // caso en el que excedemos los límites de la matriz
 
     let posicionactual = [x,y];
 
+
+
     if(JSON.stringify(n) === JSON.stringify(posicionactual)){  // comparamos la posición actual con la coordenada de término para ver si logramos hacer un camino completo
-        camino.push(coordenada);  // agregamos la última posición del camino
+        camino.push(posicionactual);  // agregamos la última posición del camino
         caminos.push(camino);
-        return camino;
     }
-
     else{
-        if(SiPuede(m,x,y+1,camino)) {
-              //se mueve derecha
-            camino.push(coordenada);
-            movimientoanterior = 0;
-            return find(m, x, y + 1, n);
+
+        camino.push(posicionactual);
+
+        if(SiPuede(m,x,y+1,camino)) {  // se mueve derecha
+            // movimientoanterior = 0;
+            return find(m, x, y + 1, n, camino);
         }
 
-        if(SiPuede(m,x+1,y,camino)) {
-            camino.push(coordenada);  //se mueve para abajo
-            movimientoanterior = 3;
-            return find(m,x+1,y,n);
+        if(SiPuede(m,x+1,y,camino)) {  // se mueve para abajo
+            // movimientoanterior = 3;
+            return find(m,x+1,y,n, camino);
         }
 
-        if(SiPuede(m,x,y-1,camino)) {        //se mueve izquierda
-            camino.push(coordenada);
-            movimientoanterior = 2;
-            return find(m,x,y-1,n);
+        if(SiPuede(m,x,y-1,camino)) {  // se mueve izquierda
+            // movimientoanterior = 2;
+            return find(m,x,y-1,n, camino);
         }
 
-        if(SiPuede(m,x-1,y,camino)){        //se mueve arriba
-            camino.push(coordenada);
-            movimientoanterior = 2;
-            return find(m,x-1,y,n);
-        } else {
-            return true;
+        if(SiPuede(m,x-1,y,camino)){  //se mueve arriba
+            // movimientoanterior = 2;
+            return find(m,x-1,y,n,camino);
         }
     }
 }
@@ -115,12 +110,14 @@ function SiPuede(m,x,y,camino) {
 
     let Limx = m.length;
     let Limy = m[0].length;
-    nueva_pos = [x,y];
+    let nueva_pos = [x,y];
 
     let bool = true;
-    camino.forEach(function (coordenada){
-        if(JSON.stringify(coordenada)===JSON.stringify(nueva_pos)) { bool = false; }  // para que no se devuelva por el mismo camino
+    camino.forEach(function (coordenada) {
+        if(JSON.stringify(coordenada) === JSON.stringify(nueva_pos)) { bool = false; }  // para que no se devuelva por el mismo camino
     })  //agregar que si está en el camino no puede entrar
+
+    if(x < 0 || y < 0) {return false;} // Caso en que se le pasan coordenadas negativas a la función
 
     if(x<Limx && y<Limy && m[x][y]===0) {
         return bool;
@@ -129,7 +126,9 @@ function SiPuede(m,x,y,camino) {
     }
 }
 
-console.log(find(m, coordenadaPartida[0], 0, coordenadaTermino));
+find(m, coordenadaPartida[0], 0, coordenadaTermino, camino)
+
+console.log(caminos);
 // console.log(coordenadaTermino)
 
 
