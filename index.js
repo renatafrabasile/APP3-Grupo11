@@ -33,3 +33,28 @@ function inputFile(file) {
     input = separar(input);
     return input;
 }
+function partida(m) {  // da en qué punto debe partir a recorrer (te dice donde está el 0 inicial)
+    let cont = 0;
+    let iniciofinal = 0;
+    m.forEach(function (coordenada){
+        cont += 1;
+        if(coordenada[0] === 0) {
+            iniciofinal = cont-1;
+        }
+    });
+    return [iniciofinal, 0];
+}
+
+function final(m) {
+    let cont = 0;
+    let coorfinal = [];
+    let y = m[0].length;
+    m.forEach(function (coordenada) {
+        let ultimo = coordenada[y-1]
+        if (ultimo === 0) {
+            return coorfinal = [cont, y-1];
+        }
+        cont += 1;
+    });
+    return coorfinal;
+}
