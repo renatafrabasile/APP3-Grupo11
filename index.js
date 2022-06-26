@@ -58,6 +58,7 @@ function final(m) {
     return coorfinal;
 }  // Identifica en qué coordenada debe parar el programa
 
+
 function find(m,x,y,n, camino) {
     let Limx = m.length;
     let Limy = m[0].length;
@@ -111,4 +112,6 @@ function SiPuede(m,x,y,camino) {
         return bool;
     } else { return false; }
 }
+
+
 
