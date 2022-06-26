@@ -1,6 +1,4 @@
-let _= require('underscore');
 let fs = require('fs');
-let file = require('file-saver')
 let m = inputFile("input.txt");
 
 let camino = [];
@@ -60,6 +58,7 @@ function final(m) {
     return coorfinal;
 }  // Identifica en qué coordenada debe parar el programa
 
+
 function find(m,x,y,n, camino) {
     let Limx = m.length;
     let Limy = m[0].length;
@@ -113,6 +112,7 @@ function SiPuede(m,x,y,camino) {
         return bool;
     } else { return false; }
 }
+
 
 find(m, coordenadaPartida[0], 0, coordenadaTermino, camino)
 console.log(caminos);
